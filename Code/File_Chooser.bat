@@ -1,6 +1,5 @@
 :: chooser.bat
 :: launches a File... Open sort of file chooser and outputs choice to the console
-:: http://stackoverflow.com/a/15885133/1683264
 
 @echo off
 setlocal enabledelayedexpansion
