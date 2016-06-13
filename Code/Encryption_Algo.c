@@ -37,10 +37,15 @@ char encrypt_algo(char ch)
     	return ch;
 
 }
-char decrypt_algo(char ch)
+char decrypt_algo(char ch,int numm)
 {
     int key_num;
     static count=0;
+    if(numm==-1)
+    {
+        count=0;
+        return '\0';
+    }
         if((ch<='Z' && ch>='A') || ( ch<='z' && ch>='a'))
     	{
     	    if(num(ch)-num(key[count % 4])>=0)
@@ -68,9 +73,10 @@ void encrypt()
 {
     system("cls");
     FILE* f1;
+    char m;
     int count=0,count_num=0;
     printf("\n\nEnter the 4 letter Key: ");
-    fflush(stdin);
+    scanf("%c",&m);
     int i;
     for(i=0;i<4;i++)
     {
@@ -78,7 +84,7 @@ void encrypt()
     }
     key[4]='\0';
     f1=fopen("Encrypted.txt","w");
-    fflush(stdin);
+    scanf("%c",&m);
     char ch;
     for(i=0;i<4;i++)
     {
@@ -102,13 +108,13 @@ void encrypt_old()
     FILE* f2;
     FILE* f3;
     printf("Select the File");
-    system("File_Chooser.bat");
+    system("test.bat");
     f3=fopen("testlog.txt","r");
-    char File[100];
+    char File[100],m;
     int i,count=0,count_num=0;
     char ch;
     fscanf(f3,"%[^\n]",File);
-    fflush(stdin);
+    scanf("%c",&m);
     system("cls");
     printf("Enter the 4 letter Key: ");
     for(i=0;i<4;i++)
@@ -118,7 +124,7 @@ void encrypt_old()
     key[4]='\0';
     f1=fopen(File,"r");
     f2=fopen("Enc.txt","w");
-    fflush(stdin);
+    scanf("%c",&m);
     count=0;
     for(i=0;i<4;i++)
     {
@@ -142,54 +148,57 @@ void encrypt_old()
 void decrypt()
 {
     system("cls");
-    char File[100];
+    char File[100],m;
     FILE* f3;
     printf("Select the File");
-    system("File_Chooser.bat");
+    system("test.bat");
     f3=fopen("testlog.txt","r");
     fscanf(f3,"%[^\n]",File);
     int i,count=0,count_num=0;
     char ch;
-    fflush(stdin);
-    int flag=0;
+    scanf("%c",&m);
+    int flag=0,flag1=0;
     system("cls");
     FILE* f1;
     FILE* f2;
     f1=fopen(File,"r");
     re_enter:
+    flag1=0;
     printf("Enter the 4 letter Key: ");
     i=0;
     for(i=0;i<4;i++)
     {
         scanf("%c",&key[i]);
     }
+    fflush(stdin);
     key[4]='\0';
 
     for(i=0;i<4;i++)
     {
+
         ch=getc(f1);
-        if(key[i]!=decrypt_algo(ch))
+        if(key[i]!=decrypt_algo(ch,0))
         {
             flag++;
+            rewind(f1);
+            flag1=-1;
             break;
         }
     }
-
-
-    if(flag!=0)
+    if(flag!=0 && flag1==-1)
     {
         if(flag==3)
         {
             fclose(f1);
-            fclose(f3);
             remove(File);
-            remove("testlog.txt");
             printf("----------------------------The File Has Been Deleted---------------------------");
             return;
         }
         else
         {
             printf("Invalid Key Only %d try remaining\n",3-flag);
+            m=decrypt_algo('a',-1);
+            rewind(f1);
             goto re_enter;
         }
     }
@@ -197,7 +206,7 @@ void decrypt()
     f2=fopen("Decrypted.txt","w");
     while((ch=getc(f1)) != EOF)
     {
-        ch=decrypt_algo(ch);
+        ch=decrypt_algo(ch,0);
     	putc(ch,f2);
     }
     fclose(f1);
